@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Camilo Patarroyo
 Maintainer: Camilo Patarroyo <ca.patarroyo960@hotmail.com>
 Description: This is a toolbox created to analyze the population genetics of Phytophthora infestan;
-    however the tools developed could serve to analyze the data from other organisms.
+    however the tools developed could serve to analyze the data from other organisms. True that.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true

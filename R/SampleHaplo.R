@@ -32,6 +32,9 @@ haplotypes<-function(table,ploidy=3) {
 
   }
 
+  #Name the first columns
+  colnames(restable)[1:2]<-c("Ind","Pop")
+
   #Find the haplotypes
   populations<-levels(as.factor(restable$Pop))
   for(h in populations) {

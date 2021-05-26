@@ -131,6 +131,8 @@ haplotypes<-function(table,ploidy=3) {
     }
 
   }
+  #Name the first columns
+  colnames(restable)[1:2]<-c("Ind","Pop")
 
   return(restable)
 }

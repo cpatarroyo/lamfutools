@@ -63,3 +63,38 @@ samhaplo<-function(table) {
   }
   return(table)
 }
+
+#' Removes the Members of a Given Population
+#'
+#' This function takes as parameter the name of a population and removes all the individuals of that population.
+#'
+#' @param table Table where the isolates/organisms are.
+#' @param value The name or list of names of the population(s) to be removed.
+
+remotion<-function(table,value) {
+  for(i in value) {
+    torem<-which(table$pop==i)
+    table<-table[-torem,]
+  }
+  return(table)
+}
+
+#' Remove All Individuals That Have a Certain Amount of 0s as Markers
+#'
+#' Takes as parameter a cutoff value and removes all individuals which have more missing loci than the cutoff value.
+#'
+#' @param table The table containing the individuals and the genotypes.
+#' @param cutoff The cutoff value for missing loci. Defaults to 6.
+#' @return Table of the genotypes without the individuals with missing loci above of the cutoff.
+
+remzeroes<-function(table,cutoff=6) {
+  remfun<-function(x)
+  {
+    sum(x==0)
+  }
+
+  torem <- which(apply(table,MARGIN=1,FUN = remfun) >= cutoff)
+
+  return(table[-torem,])
+}
+

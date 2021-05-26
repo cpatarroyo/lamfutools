@@ -1,12 +1,12 @@
-#' Create a Table With the Possible Haplotypes From a Table of Polyploid Genotypes
+#' Create a Table With Shuffled Haplotypes From a Table of Polyploid Genotypes
 #'
-#' This function loads a table with a set of polyploid markers and separates its possible haplotypes.
+#' This function loads a table with a set of polyploid markers, separates its loci by the ploidy level and then randomly shuffles the markers generating a hypothetical population of randomly generated haploid individuals.
 #'
 #' @param table Table with the polyploid loci, one organisms per row
 #' @param ploidy Ploidy level of the organism
 #' @return Table of haploid data from the polyploid table
 
-haplotypes<-function(table,ploidy=3) {
+rndhaplo<-function(table,ploidy=3) {
   #Define the position of the first locus
   stlocus<-min(grep("[0-9]",colnames(table)))
 
@@ -38,7 +38,7 @@ haplotypes<-function(table,ploidy=3) {
   #Find the haplotypes
   populations<-levels(as.factor(restable$Pop))
   for(h in populations) {
-    indpop<-grep(i,restable$Pop)
+    indpop<-grep(h,restable$Pop)
     restable[indpop,stlocus:length(restable[1,])]<-apply(restable[indpop,stlocus:length(restable[1,])],MARGIN = 2,FUN = sample)
     restable[indpop,1]<-paste(h,1:length(indpop),sep="_")
   }
@@ -98,3 +98,39 @@ remzeroes<-function(table,cutoff=6) {
   return(table[-torem,])
 }
 
+#' Create a Table With the Possible Haplotypes From a Table of Polyploid Genotypes
+#'
+#' This function loads a table with a set of polyploid markers and separates its possible haplotypes.
+#'
+#' @param table Table with the polyploid loci, one organisms per row
+#' @param ploidy Ploidy level of the organism
+#' @return Table of haploid data from the polyploid table
+
+haplotypes<-function(table,ploidy=3) {
+  #Define the position of the first locus
+  stlocus<-min(grep("[0-9]",colnames(table)))
+
+  #Define the positions of the loci
+  poslist<-vector(mode="list",length = ploidy)
+  for(i in 1:length(poslist)) {
+    poslist[[i]]<-seq(from=stlocus+(i-1),to=length(table[1,]), by=ploidy)
+  }
+
+  #Define the resulting dataframe
+  restable<-data.frame()
+  for(j in 1:length(table[,1])) {
+    if(length(restable)==0) {
+      restable<-rbind(restable,c(paste(table[j,1],1,sep="_"),table[j,2],table[j,poslist[[1]]]))
+    }
+    else {
+      restable<-rbind(restable,c(paste(table[j,1],1,sep="_"),as.character(table[j,2]),as.numeric(table[j,poslist[[1]]])))
+    }
+    restable<-rbind(restable,c(paste(table[j,1],2,sep="_"),as.character(table[j,2]),as.numeric(table[j,poslist[[2]]])))
+    if(ploidy==3) {
+      restable<-rbind(restable,c(paste(table[j,1],3,sep="_"),as.character(table[j,2]),as.numeric(table[j,poslist[[3]]])))
+    }
+
+  }
+
+  return(restable)
+}
